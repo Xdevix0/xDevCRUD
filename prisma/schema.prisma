@@ -20,17 +20,17 @@ model User {
 
   settings UserSettings?
 
-  refreshTokens RefreshToken[]
+  authTokens AuthTokens[]
 }
 
-model RefreshToken {
+model AuthTokens{
   id        String   @id @default(uuid())
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  userId String @unique
 }
 
 model UserSettings {
