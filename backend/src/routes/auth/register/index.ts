@@ -59,7 +59,7 @@ const authRegister: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
         }
         const hashedPassword = await bcrypt.hash(password, 10)
         try {
-            await prisma.user.create({
+            const user = await prisma.user.create({
                 data: {
                     name,
                     surname,
@@ -67,6 +67,12 @@ const authRegister: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
                     password: hashedPassword,
                     phoneNumber,
                     birthday: new Date(birthday),
+                }
+            })
+            
+            await prisma.userSettings.create({
+                data: {
+                    userId: user.id,
                 }
             })
             return reply.code(201).send({
