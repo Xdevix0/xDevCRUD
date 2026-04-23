@@ -1,6 +1,4 @@
-
-import { PrismaClient } from '../../../../../generated/prisma'
-const prisma = new PrismaClient()
+import { prisma } from '../../../lib/prisma'
 import { type FastifyPluginAsync } from 'fastify'
 interface RegisterBody {
     name: string
@@ -52,7 +50,7 @@ const authRegister: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
                 msg: "PhoneNumber is requided"
             })
         }
-        if (emptyToUndefined(birthday)) {
+        if (emptyToUndefined(birthday) === undefined) {
             return reply.code(422).send({
                 status: "err",
                 msg: "BrithDay is requided"
