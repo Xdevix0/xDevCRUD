@@ -1,4 +1,5 @@
 import { prisma } from '../../../lib/prisma'
+import bcrypt from 'bcryptjs'
 import { type FastifyPluginAsync } from 'fastify'
 interface RegisterBody {
     name: string
@@ -56,13 +57,14 @@ const authRegister: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
                 msg: "BrithDay is requided"
             })
         }
+        const hashedPassword = await bcrypt.hash(password, 10)
         try {
             await prisma.user.create({
                 data: {
                     name,
                     surname,
                     email,
-                    password,
+                    password: hashedPassword,
                     phoneNumber,
                     birthday: new Date(birthday),
                 }
@@ -75,7 +77,7 @@ const authRegister: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
             if (err.code === 'P2002') {
                 return reply.code(409).send({ status: "err", msg: "Email is exist" })
             }
-            return reply.code(500).send({ status: "err", msg: "server error" })
+            return reply.code(500).send({ status: "err", msg: "server error", error: err })
         }
 
 

@@ -1,17 +1,19 @@
 import { join } from 'node:path'
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload'
-import { FastifyPluginAsync, FastifyServerOptions } from 'fastify'
-
+import { FastifyPluginAsync, FastifyServerOptions} from 'fastify'
+import fastifyJwt from '@fastify/jwt'
 export interface AppOptions extends FastifyServerOptions, Partial<AutoloadPluginOptions> {
 
 }
 const options: AppOptions = {
 }
-
 const app: FastifyPluginAsync<AppOptions> = async (
   fastify,
   opts
 ): Promise<void> => {
+  void fastify.register(fastifyJwt, {
+    secret: 'f509fe92055d4feb63d07a8da3f7ecad2aad7b1a4cdd2cc42c3b5c0b34d05188'
+  })
 
   void fastify.register(AutoLoad, {
     dir: join(__dirname, 'plugins'),
